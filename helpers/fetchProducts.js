@@ -6,7 +6,7 @@ const fetchProducts = async (querry) => {
     const result = await data.json();
     return result;
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
     return error;
   }
 };

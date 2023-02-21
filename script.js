@@ -34,13 +34,15 @@ const listItems = async () => {
   // loadingMessage(); // Exibe mensagem de carregando.
   const itemsSection = document.querySelector('.items');
   const data = await fetchProducts('computador');
-  const { results } = data; 
+  const { results } = data;
+
   results.forEach(({ id, title, thumbnail }) => {
     const items = {
       sku: id,
       name: title,
       image: thumbnail,
     };
+
     itemsSection.appendChild(createProductItemElement(items));
   });
   // eraseLoadingMessage();
@@ -54,6 +56,6 @@ const createCartItemElement = ({ sku, name, salePrice }) => {
   return li;
 };
 
-window.onload = () => { 
+window.onload = () => {
   listItems();
- };
+};

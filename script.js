@@ -30,6 +30,22 @@ const cartItemClickListener = (event) => {
   // coloque seu código aqui
 };
 
+const listItems = async () => {
+  // loadingMessage(); // Exibe mensagem de carregando.
+  const itemsSection = document.querySelector('.items');
+  const data = await fetchProducts('computador');
+  const { results } = data; 
+  results.forEach(({ id, title, thumbnail }) => {
+    const items = {
+      sku: id,
+      name: title,
+      image: thumbnail,
+    };
+    itemsSection.appendChild(createProductItemElement(items));
+  });
+  // eraseLoadingMessage();
+};
+
 const createCartItemElement = ({ sku, name, salePrice }) => {
   const li = document.createElement('li');
   li.className = 'cart__item';

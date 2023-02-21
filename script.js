@@ -17,8 +17,19 @@ const createCustomElement = (element, className, innerText) => {
 
 const getSkuFromProductItem = (item) => item.querySelector('span.item__sku').innerText;
 
-const cartItemClickListener = (event) => {
-  // coloque seu código aqui
+const cartItemClickListener = ({ target }) => {
+    // Remove o item do DOM:
+    target.remove();
+    // Atualiza o cart com o que restou dentro da ol:
+    saveCartItems(ol.innerHTML);
+    // Atualiza o total-price:
+    // allPrices();
+};
+
+// Torna os itens do carrinho removíveis com clique:
+const removeCartItems = () => {
+  const li = document.querySelectorAll('.cart__item');
+  li.forEach((cartProduct) => cartProduct.addEventListener('click', cartItemClickListener));
 };
 
 const createCartItemElement = ({ sku, name, salePrice }) => {

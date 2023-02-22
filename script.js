@@ -92,4 +92,6 @@ const listItems = async () => {
 
 window.onload = () => {
   listItems();
+  ol.innerHTML = getSavedCartItems();
+  removeCartItems();
 };

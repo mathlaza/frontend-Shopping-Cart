@@ -17,13 +17,47 @@ const createCustomElement = (element, className, innerText) => {
 
 const getSkuFromProductItem = (item) => item.querySelector('span.item__sku').innerText;
 
+const loading = () => {
+  const itemsSection = document.querySelector('.items');
+  const p = document.createElement('p');
+  p.className = 'loading';
+  p.innerText = 'Carregando';
+  itemsSection.appendChild(p);
+};
+
+const eraseLoading = () => document.querySelector('.loading').remove();
+
+const cartTotal = () => {
+  const htmlPrice = document.querySelector('.total-price');
+  // Buscando todas as li's, que virão como objeto NodeList:
+  const liRefreshed = document.querySelectorAll('.cart__item');
+  // Convertendo o objeto NodeList para um array:
+  const arrayLi = Array.from(liRefreshed);
+
+  const total = arrayLi.reduce((acc, li) => {
+    let accumulator = acc;
+    // O innerHTML é uma string, transformo em array com split, pego apenas o valor do preço nesse array, somo com o acumulador.
+    accumulator += +li.innerHTML.split('$')[1];
+    return accumulator;
+  }, 0);
+  htmlPrice.innerHTML = total;
+};
+
+const emptyCart = () => {
+  const btnCart = document.querySelector('.empty-cart');
+  btnCart.addEventListener('click', () => {
+    ol.innerHTML = '';
+    cartTotal();
+    saveCartItems(ol.innerHTML);
+  });
+};
+
 const cartItemClickListener = ({ target }) => {
     // Remove o item do DOM:
     target.remove();
     // Atualiza o cart com o que restou dentro da ol:
     saveCartItems(ol.innerHTML);
-    // Atualiza o total-price:
-    // allPrices();
+    cartTotal();
 };
 
 // Torna os itens do carrinho removíveis com clique:
@@ -53,8 +87,7 @@ const moveItemToCart = async (item) => {
   ol.appendChild(createCartItemElement(itemToPutOnCart));
 
   saveCartItems(ol.innerHTML); // Salva o item no localStorage.
-
-  // allPrices(); // Atualiza o total-price.
+  cartTotal();
 };
 
 const createProductItemElement = ({ sku, name, image }) => {
@@ -73,7 +106,7 @@ const createProductItemElement = ({ sku, name, image }) => {
 };
 
 const listItems = async () => {
-  // loadingMessage(); // Exibe mensagem de carregando.
+  loading();
   const itemsSection = document.querySelector('.items');
   const data = await fetchProducts('computador');
   const { results } = data;
@@ -87,11 +120,13 @@ const listItems = async () => {
 
     itemsSection.appendChild(createProductItemElement(itemToRender));
   });
-  // eraseLoadingMessage();
+  eraseLoading();
 };
 
 window.onload = () => {
   listItems();
   ol.innerHTML = getSavedCartItems();
   removeCartItems();
+  cartTotal();
+  emptyCart();
 };

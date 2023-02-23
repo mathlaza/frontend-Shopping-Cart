@@ -131,8 +131,46 @@ body {
   display: flex;
   flex-basis: 32%;
   flex-flow: column wrap;
-  background-color: rgb(241, 241, 238);
+  background-color: #f3E9FB;
   height: 100vh;
+  font-size: 14px;
+  justify-content: center;
+  color: #444955;
+  font-family: 'Epilogue';
+  font-style: normal;
+}
+
+.div_cart {
+  display: flex;
+  align-items: center;
+}
+
+.cart__item {
+  display: flex;
+  flex-direction: column;
+  padding-top: 20px;
+}
+
+.cart__item .item__price__cart {
+  margin: 10px;
+  color: #000000;
+  font-size: 20px;
+  font-style: normal;
+  font-family: 'Times New Roman', Times, serif;
+  font-weight: 700;
+}
+
+.div_cart .item__image {
+  width: 97px;
+  height: 97px;
+  border-radius: 50px;
+  margin: 10px;
+}
+
+.item__remove {
+  width: 20px;
+  height: 20px;
+  margin-right: 20px;
 }
 
 .cart .cart__items {

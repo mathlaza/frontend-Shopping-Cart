@@ -30,17 +30,18 @@ const eraseLoading = () => document.querySelector('.loading').remove();
 const cartTotal = () => {
   const htmlPrice = document.querySelector('.total-price');
   // Buscando todas as li's, que virão como objeto NodeList:
-  const liRefreshed = document.querySelectorAll('.cart__item');
+  const liRefreshed = document.querySelectorAll('.item__price__cart');
+  
   // Convertendo o objeto NodeList para um array:
   const arrayLi = Array.from(liRefreshed);
 
   const total = arrayLi.reduce((acc, li) => {
     let accumulator = acc;
-    // O innerHTML é uma string, transformo em array com split, pego apenas o valor do preço nesse array, somo com o acumulador.
-    accumulator += +li.innerHTML.split('$')[1];
+    // O innerHTML é uma string
+    accumulator += +li.innerHTML.split(': ')[1];
     return accumulator;
   }, 0);
-  htmlPrice.innerHTML = total;
+  htmlPrice.innerHTML = `Subtotal R$: ${total.toFixed(2)}`;
 };
 
 const emptyCart = () => {
@@ -53,35 +54,55 @@ const emptyCart = () => {
 };
 
 const cartItemClickListener = ({ target }) => {
-    // Remove o item do DOM:
-    target.remove();
-    // Atualiza o cart com o que restou dentro da ol:
-    saveCartItems(ol.innerHTML);
-    cartTotal();
+  // Remove a section do DOM:
+  target.parentNode.remove();
+  // Atualiza o cart com o que restou dentro da ol:
+  saveCartItems(ol.innerHTML);
+  cartTotal();
 };
 
 // Torna os itens do carrinho removíveis com clique:
 const removeCartItems = () => {
-  const li = document.querySelectorAll('.cart__item');
-  li.forEach((cartProduct) => cartProduct.addEventListener('click', cartItemClickListener));
+  const sections = document.querySelectorAll('.item__remove');
+  sections.forEach((cartProduct) => cartProduct.addEventListener('click', cartItemClickListener));
 };
 
-const createCartItemElement = ({ sku, name, salePrice }) => {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  return li;
+const createXButton = () => {
+  const xRemove = document.createElement('img');
+  xRemove.className = 'item__remove';
+  xRemove.src = 'cross-removebg-preview.png';
+  xRemove.addEventListener('click', cartItemClickListener);
+  return xRemove;
+};
+
+const createCartItemElement = ({ sku, name, salePrice, image }) => {
+  const div = document.createElement('div');
+  div.className = 'div_cart';
+
+  const section = document.createElement('section');
+  section.className = 'cart__item';
+
+  section.appendChild(createCustomElement('span', 'item__sku', sku));
+  section.innerText = name;
+
+  section.appendChild(createCustomElement('span', 'item__price__cart', `R$: ${salePrice}`));
+
+  div.appendChild(createProductImageElement(image));
+  div.appendChild(section);
+  div.appendChild(createXButton());
+
+  return div;
 };
 
 const moveItemToCart = async (item) => {
   // Recupera o id de meu item:
   const itemId = getSkuFromProductItem(item);
-  const { id, title, price } = await fetchItem(itemId);
+  const { id, title, price, thumbnail } = await fetchItem(itemId);
   const itemToPutOnCart = {
     sku: id,
     name: title,
     salePrice: price,
+    image: thumbnail,
   };
 
   ol.appendChild(createCartItemElement(itemToPutOnCart));

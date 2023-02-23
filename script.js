@@ -21,7 +21,7 @@ const loading = () => {
   const itemsSection = document.querySelector('.items');
   const p = document.createElement('p');
   p.className = 'loading';
-  p.innerText = 'Carregando';
+  p.innerText = 'Carregando...';
   itemsSection.appendChild(p);
 };
 
@@ -111,13 +111,18 @@ const moveItemToCart = async (item) => {
   cartTotal();
 };
 
-const createProductItemElement = ({ sku, name, image }) => {
+const createProductItemElement = ({ sku, name, image, salePrice }) => {
   const section = document.createElement('section');
   section.className = 'item';
 
   section.appendChild(createCustomElement('span', 'item__sku', sku));
-  section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
+  section.appendChild(createCustomElement('span', 'item__title', name));
+  const div = document.createElement('div');
+  div.className = 'div_item';
+  div.innerHTML = 'R$:';
+  div.appendChild(createCustomElement('span', 'item__price', salePrice));
+  section.appendChild(div);
   const btn = (createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
 
   btn.addEventListener('click', () => moveItemToCart(section));
@@ -132,11 +137,12 @@ const listItems = async () => {
   const data = await fetchProducts('computador');
   const { results } = data;
 
-  results.forEach(({ id, title, thumbnail }) => {
+  results.forEach(({ id, title, thumbnail, price }) => {
     const itemToRender = {
       sku: id,
       name: title,
       image: thumbnail,
+      salePrice: price,
     };
 
     itemsSection.appendChild(createProductItemElement(itemToRender));
